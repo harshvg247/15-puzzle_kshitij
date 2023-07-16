@@ -65,8 +65,8 @@ function drawBoard(nRows, nCols, nCells) {
       let div = document.createElement("div");
       div.classList.add("tile");
       div.setAttribute("id", `r${row}c${col}`);
-      div.style.width = `${50 / nCols}vh`;
-      div.style.height = `${50 / nRows}vh`;
+      div.style.width = `${40 / nCols}vh`;
+      div.style.height = `${40 / nRows}vh`;
       div.style.top = `${(row / nRows) * 100}%`;
       div.style.left = `${(col / nCols) * 100}%`;
       div.innerHTML = 1 + row * nCols + col;
