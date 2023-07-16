@@ -148,44 +148,40 @@ function swapDisplay(id1, id2) {
   div1.style.display = "none";
 }
 function checkLeft(row, col, nCells) {
-  if (col > 0) {
-    let emptyTile = document.getElementById(`r${row}c${col - 1}`);
+  for (let i = col - 1; i >= 0; i--) {
+    let emptyTile = document.getElementById(`r${row}c${i}`);
     if (emptyTile.innerHTML == nCells) {
-      return 1;
-    } else {
-      return 0;
+      return i;
     }
   }
+  return -1;
 }
 function checkRight(row, col, nCols, nCells) {
-  if (col < nCols - 1) {
-    let emptyTile = document.getElementById(`r${row}c${col + 1}`);
+  for (let i = col + 1; i < nCols; i++) {
+    let emptyTile = document.getElementById(`r${row}c${i}`);
     if (emptyTile.innerHTML == nCells) {
-      return 1;
-    } else {
-      return 0;
+      return i;
     }
   }
+  return -1;
 }
 function checkAbove(row, col, nCells) {
-  if (row > 0) {
-    let emptyTile = document.getElementById(`r${row - 1}c${col}`);
+  for (let i = row - 1; i >= 0; i--) {
+    let emptyTile = document.getElementById(`r${i}c${col}`);
     if (emptyTile.innerHTML == nCells) {
-      return 1;
-    } else {
-      return 0;
+      return i;
     }
   }
+  return -1;
 }
 function checkBelow(row, col, nRows, nCells) {
-  if (row < nRows - 1) {
-    let emptyTile = document.getElementById(`r${row + 1}c${col}`);
+  for (let i = row + 1; i < nRows; i++) {
+    let emptyTile = document.getElementById(`r${i}c${col}`);
     if (emptyTile.innerHTML == nCells) {
-      return 1;
-    } else {
-      return 0;
+      return i;
     }
   }
+  return -1;
 }
 function checkWin(nCells, nRows, nCols) {
   const list = document.getElementsByClassName("tile");
@@ -211,51 +207,66 @@ function swap(nRows, nCols, nCells, e) {
   let row = Number(tileClicked[1]);
   let col = Number(tileClicked[3]);
   const tile = document.getElementById(`r${row}c${col}`);
-  if (checkAbove(row, col, nCells)) {
-    tile.style.transform = "translateY(-100%) rotateZ(360deg)";
-    setTimeout(function () {
-      tile.style.transform = "none";
-    }, 300);
-    setTimeout(function () {
-      swapInnerHTML(`r${row}c${col}`, `r${row - 1}c${col}`);
-    }, 10);
-    setTimeout(function () {
-      swapDisplay(`r${row}c${col}`, `r${row - 1}c${col}`);
-    }, 300);
-  } else if (checkBelow(row, col, nRows, nCells)) {
-    tile.style.transform = "translateY(100%) rotateZ(360deg)";
-    setTimeout(function () {
-      tile.style.transform = "none";
-    }, 300);
-    setTimeout(function () {
-      swapInnerHTML(`r${row}c${col}`, `r${row + 1}c${col}`);
-    }, 10);
-    setTimeout(function () {
-      swapDisplay(`r${row}c${col}`, `r${row + 1}c${col}`);
-    }, 300);
-  } else if (checkLeft(row, col, nCells)) {
-    tile.style.transform = "translateX(-100%) rotateZ(360deg)";
-
-    setTimeout(function () {
-      tile.style.transform = "none";
-    }, 300);
-    setTimeout(function () {
-      swapInnerHTML(`r${row}c${col}`, `r${row}c${col - 1}`);
-    }, 10);
-    setTimeout(function () {
-      swapDisplay(`r${row}c${col}`, `r${row}c${col - 1}`);
-    }, 300);
-  } else if (checkRight(row, col, nCols, nCells)) {
-    tile.style.transform = "translateX(100%) rotateZ(360deg)";
-    setTimeout(function () {
-      tile.style.transform = "none";
-    }, 300);
-    setTimeout(function () {
-      swapInnerHTML(`r${row}c${col}`, `r${row}c${col + 1}`);
-    }, 10);
-    setTimeout(function () {
-      swapDisplay(`r${row}c${col}`, `r${row}c${col + 1}`);
-    }, 300);
+  if (checkAbove(row, col, nCells) > -1) {
+    let emptyTileIndex = checkAbove(row, col, nCells);
+    for (let i = emptyTileIndex; i < row; i++) {
+      let tile1 = document.getElementById(`r${i + 1}c${col}`);
+      tile1.style.transform = "translateY(-100%) rotateZ(360deg)";
+      setTimeout(function () {
+        tile1.style.transform = "none";
+      }, 300);
+      setTimeout(function () {
+        swapInnerHTML(`r${i + 1}c${col}`, `r${i}c${col}`);
+      }, 10);
+      setTimeout(function () {
+        swapDisplay(`r${i + 1}c${col}`, `r${i}c${col}`);
+      }, 300);
+    }
+  } else if (checkBelow(row, col, nRows, nCells) > -1) {
+    let emptyTileIndex = checkBelow(row, col,nRows, nCells);
+    for (let i = emptyTileIndex; i > row; i--) {
+      let tile1 = document.getElementById(`r${i - 1}c${col}`);
+      tile1.style.transform = "translateY(100%) rotateZ(360deg)";
+      setTimeout(function () {
+        tile1.style.transform = "none";
+      }, 300);
+      setTimeout(function () {
+        swapInnerHTML(`r${i - 1}c${col}`, `r${i}c${col}`);
+      }, 10);
+      setTimeout(function () {
+        swapDisplay(`r${i - 1}c${col}`, `r${i}c${col}`);
+      }, 300);
+    }
+  } else if (checkLeft(row, col, nCells)>-1) {
+    let emptyTileIndex = checkLeft(row, col, nCells);
+    for (let i = emptyTileIndex; i < col; i++) {
+      let tile1 = document.getElementById(`r${row}c${i+1}`);
+      tile1.style.transform = "translateX(-100%) rotateZ(360deg)";
+      setTimeout(function () {
+        tile1.style.transform = "none";
+      }, 300);
+      setTimeout(function () {
+        swapInnerHTML(`r${row}c${i+1}`, `r${row}c${i}`);
+      }, 10);
+      setTimeout(function () {
+        swapDisplay(`r${row}c${i+1}`, `r${row}c${i}`);
+      }, 300);
+    }
+  } else if (checkRight(row, col, nCols, nCells)>-1) {
+    let emptyTileIndex = checkRight(row, col,nCols, nCells);
+    for (let i = emptyTileIndex; i > col; i--) {
+      let tile1 = document.getElementById(`r${row}c${i-1}`);
+      tile1.style.transform = "translateX(100%) rotateZ(360deg)";
+      setTimeout(function () {
+        tile1.style.transform = "none";
+      }, 300);
+      setTimeout(function () {
+        swapInnerHTML(`r${row}c${i-1}`, `r${row}c${i}`);
+      }, 10);
+      setTimeout(function () {
+        swapDisplay(`r${row}c${i-1}`, `r${row}c${i}`);
+      }, 300);
+    }
   } else {
     return;
   }
