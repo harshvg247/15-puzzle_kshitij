@@ -306,20 +306,18 @@ function KeyEvent(e) {
   let r = Number(tile.id[1]);
   let c = Number(tile.id[3]);
   console.log(r, c);
-  if (e.code == "ArrowUp") {
-    if (r < nRows - 1) {
-      let tile2 = document.getElementById(`r${r + 1}c${c}`);
-      tile2.style.transform = "translateY(-100%) rotateZ(360deg)";
-      setTimeout(function () {
-        tile2.style.transform = "none";
-      }, 300);
-      setTimeout(function () {
-        swapInnerHTML(`r${r + 1}c${c}`, `r${r}c${c}`);
-      }, 10);
-      setTimeout(function () {
-        swapDisplay(`r${r + 1}c${c}`, `r${r}c${c}`);
-      }, 300);
-    }
+  if (e.code == "ArrowUp" && r < nRows - 1) {
+    let tile2 = document.getElementById(`r${r + 1}c${c}`);
+    tile2.style.transform = "translateY(-100%) rotateZ(360deg)";
+    setTimeout(function () {
+      tile2.style.transform = "none";
+    }, 300);
+    setTimeout(function () {
+      swapInnerHTML(`r${r + 1}c${c}`, `r${r}c${c}`);
+    }, 10);
+    setTimeout(function () {
+      swapDisplay(`r${r + 1}c${c}`, `r${r}c${c}`);
+    }, 300);
   } else if (e.code == "ArrowDown" && r > 0) {
     let tile2 = document.getElementById(`r${r - 1}c${c}`);
     tile2.style.transform = "translateY(100%) rotateZ(360deg)";
@@ -387,8 +385,16 @@ displayScore();
 window.addEventListener("keydown", function (e) {
   KeyEvent(e);
 });
-window.addEventListener("keydown", function(e) {
-  if(["Space","ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].indexOf(e.code) > -1) {
+window.addEventListener(
+  "keydown",
+  function (e) {
+    if (
+      ["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(
+        e.code
+      ) > -1
+    ) {
       e.preventDefault();
-  }
-}, false);
+    }
+  },
+  false
+);
