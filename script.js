@@ -57,8 +57,10 @@ function drawBoard(nRows, nCols, nCells) {
   const board = document.getElementById("board");
   board.style.display = "flex";
   board.innerHTML = "";
-
+  const boardContainer=document.getElementById("boardContainer");
+  const height=boardContainer.clientHeight;
   winText = document.getElementById("winText");
+  console.log(height);
   winText.style.display = "none";
   for (let row = 0; row < nRows; row++) {
     for (let col = 0; col < nCols; col++) {
