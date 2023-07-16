@@ -57,8 +57,8 @@ function drawBoard(nRows, nCols, nCells) {
   const board = document.getElementById("board");
   board.style.display = "flex";
   board.innerHTML = "";
-  const boardContainer=document.getElementById("boardContainer");
-  const height=boardContainer.clientHeight;
+  const boardContainer = document.getElementById("boardContainer");
+  const height = boardContainer.clientHeight;
   winText = document.getElementById("winText");
   console.log(height);
   winText.style.display = "none";
@@ -96,14 +96,14 @@ function drawBoard(nRows, nCols, nCells) {
       }
     }
   }
-  
-    let r=randomRow(nRows);
-    let c=randomCol(nCols);
-    console.log(Number(nRows)-1-r+Number(nCols)-1-c);
-    if((Number(nRows)-1-r+Number(nCols)-1-c)%2!=0){
-      swapTiles(`r${r}c${c}`,`r${nRows-1}c${nCols-1}`);
-    }
-  
+
+  let r = randomRow(nRows);
+  let c = randomCol(nCols);
+  console.log(Number(nRows) - 1 - r + Number(nCols) - 1 - c);
+  if ((Number(nRows) - 1 - r + Number(nCols) - 1 - c) % 2 != 0) {
+    swapTiles(`r${r}c${c}`, `r${nRows - 1}c${nCols - 1}`);
+  }
+
   createEmptyTile(nCells);
   resetMoves();
 
@@ -131,6 +131,19 @@ function swapTiles(id1, id2) {
   let temp1 = div1.innerHTML;
   div1.innerHTML = div2.innerHTML;
   div2.innerHTML = temp1;
+  div2.style.display = "flex";
+  div1.style.display = "none";
+}
+function swapInnerHTML(id1, id2) {
+  let div1 = document.getElementById(id1);
+  let div2 = document.getElementById(id2);
+  let temp1 = div1.innerHTML;
+  div1.innerHTML = div2.innerHTML;
+  div2.innerHTML = temp1;
+}
+function swapDisplay(id1, id2) {
+  let div1 = document.getElementById(id1);
+  let div2 = document.getElementById(id2);
   div2.style.display = "flex";
   div1.style.display = "none";
 }
@@ -204,7 +217,10 @@ function swap(nRows, nCols, nCells, e) {
       tile.style.transform = "none";
     }, 300);
     setTimeout(function () {
-      swapTiles(`r${row}c${col}`, `r${row - 1}c${col}`);
+      swapInnerHTML(`r${row}c${col}`, `r${row - 1}c${col}`);
+    }, 10);
+    setTimeout(function () {
+      swapDisplay(`r${row}c${col}`, `r${row - 1}c${col}`);
     }, 300);
   } else if (checkBelow(row, col, nRows, nCells)) {
     tile.style.transform = "translateY(100%) rotateZ(360deg)";
@@ -212,7 +228,10 @@ function swap(nRows, nCols, nCells, e) {
       tile.style.transform = "none";
     }, 300);
     setTimeout(function () {
-      swapTiles(`r${row}c${col}`, `r${row + 1}c${col}`);
+      swapInnerHTML(`r${row}c${col}`, `r${row + 1}c${col}`);
+    }, 10);
+    setTimeout(function () {
+      swapDisplay(`r${row}c${col}`, `r${row + 1}c${col}`);
     }, 300);
   } else if (checkLeft(row, col, nCells)) {
     tile.style.transform = "translateX(-100%) rotateZ(360deg)";
@@ -221,7 +240,10 @@ function swap(nRows, nCols, nCells, e) {
       tile.style.transform = "none";
     }, 300);
     setTimeout(function () {
-      swapTiles(`r${row}c${col}`, `r${row}c${col - 1}`);
+      swapInnerHTML(`r${row}c${col}`, `r${row}c${col - 1}`);
+    }, 10);
+    setTimeout(function () {
+      swapDisplay(`r${row}c${col}`, `r${row}c${col - 1}`);
     }, 300);
   } else if (checkRight(row, col, nCols, nCells)) {
     tile.style.transform = "translateX(100%) rotateZ(360deg)";
@@ -229,7 +251,10 @@ function swap(nRows, nCols, nCells, e) {
       tile.style.transform = "none";
     }, 300);
     setTimeout(function () {
-      swapTiles(`r${row}c${col}`, `r${row}c${col + 1}`);
+      swapInnerHTML(`r${row}c${col}`, `r${row}c${col + 1}`);
+    }, 10);
+    setTimeout(function () {
+      swapDisplay(`r${row}c${col}`, `r${row}c${col + 1}`);
     }, 300);
   } else {
     return;
@@ -263,6 +288,82 @@ function clearScores() {
   secondBox.innerHTML = "-";
   thirdBox.innerHTML = "-";
 }
+function KeyEvent(e) {
+  let nMoves = document.getElementById("nMoves");
+  const rowInput = document.getElementById("nRows");
+  const colInput = document.getElementById("nCols");
+  let tile;
+  nRows = rowInput.value;
+  nCols = colInput.value;
+  console.log(e.code);
+  const tileList = document.querySelectorAll(".tile");
+  for (let i = 0; i < nRows * nCols; i++) {
+    if (tileList[i].innerHTML == nRows * nCols) {
+      tile = tileList[i];
+      break;
+    }
+  }
+  let r = Number(tile.id[1]);
+  let c = Number(tile.id[3]);
+  console.log(r, c);
+  if (e.code == "ArrowUp") {
+    if (r < nRows - 1) {
+      let tile2 = document.getElementById(`r${r + 1}c${c}`);
+      tile2.style.transform = "translateY(-100%) rotateZ(360deg)";
+      setTimeout(function () {
+        tile2.style.transform = "none";
+      }, 300);
+      setTimeout(function () {
+        swapInnerHTML(`r${r + 1}c${c}`, `r${r}c${c}`);
+      }, 10);
+      setTimeout(function () {
+        swapDisplay(`r${r + 1}c${c}`, `r${r}c${c}`);
+      }, 300);
+    }
+  } else if (e.code == "ArrowDown" && r > 0) {
+    let tile2 = document.getElementById(`r${r - 1}c${c}`);
+    tile2.style.transform = "translateY(100%) rotateZ(360deg)";
+    setTimeout(function () {
+      tile2.style.transform = "none";
+    }, 300);
+    setTimeout(function () {
+      swapInnerHTML(`r${r - 1}c${c}`, `r${r}c${c}`);
+    }, 10);
+    setTimeout(function () {
+      swapDisplay(`r${r - 1}c${c}`, `r${r}c${c}`);
+    }, 300);
+  } else if (e.code == "ArrowLeft" && c < nCols - 1) {
+    let tile2 = document.getElementById(`r${r}c${c + 1}`);
+    tile2.style.transform = "translateX(-100%) rotateZ(360deg)";
+    setTimeout(function () {
+      tile2.style.transform = "none";
+    }, 300);
+    setTimeout(function () {
+      swapInnerHTML(`r${r}c${c + 1}`, `r${r}c${c}`);
+    }, 10);
+    setTimeout(function () {
+      swapDisplay(`r${r}c${c + 1}`, `r${r}c${c}`);
+    }, 300);
+  } else if (e.code == "ArrowRight" && c > 0) {
+    let tile2 = document.getElementById(`r${r}c${c - 1}`);
+    tile2.style.transform = "translateX(100%) rotateZ(360deg)";
+    setTimeout(function () {
+      tile2.style.transform = "none";
+    }, 300);
+    setTimeout(function () {
+      swapInnerHTML(`r${r}c${c - 1}`, `r${r}c${c}`);
+    }, 10);
+    setTimeout(function () {
+      swapDisplay(`r${r}c${c - 1}`, `r${r}c${c}`);
+    }, 300);
+  } else {
+    return;
+  }
+  nMoves.innerHTML = Number(nMoves.innerHTML) + 1;
+  setTimeout(function () {
+    checkWin(nRows * nCols, nRows, nCols);
+  }, 300);
+}
 
 start();
 
@@ -283,3 +384,11 @@ newGame.addEventListener("click", function () {
   resetBoard();
 });
 displayScore();
+window.addEventListener("keydown", function (e) {
+  KeyEvent(e);
+});
+window.addEventListener("keydown", function(e) {
+  if(["Space","ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].indexOf(e.code) > -1) {
+      e.preventDefault();
+  }
+}, false);
