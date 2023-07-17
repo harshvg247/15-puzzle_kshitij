@@ -1,3 +1,4 @@
+let interval;
 function randomRow(nRows) {
   return Math.floor(Math.random() * nRows);
 }
@@ -9,28 +10,26 @@ function resetMoves() {
   nMoves.innerHTML = 0;
 }
 function checkIfHighScore() {
-  let nMoves = document.getElementById("nMoves");
-  let curMoves = nMoves.innerHTML;
-  console.log(curMoves);
+  let time = document.getElementById("time");
+  let curTime = time.innerHTML;
   let first = Number(localStorage.getItem("First"));
   let second = Number(localStorage.getItem("Second"));
   let third = Number(localStorage.getItem("Third"));
-  console.log(first);
-  if (first > Number(curMoves) || first == 0 || isNaN(first)) {
+  if (first > Number(curTime) || first == 0 || isNaN(first)) {
     if (!isNaN(first) && first != 0) {
       localStorage.setItem("Second", first);
     }
     if (!isNaN(second) && second != 0) {
       localStorage.setItem("Third", second);
     }
-    localStorage.setItem("First", curMoves);
-  } else if (second > Number(curMoves) || second == 0 || isNaN(second)) {
-    localStorage.setItem("Second", curMoves);
+    localStorage.setItem("First", curTime);
+  } else if (second > Number(curTime) || second == 0 || isNaN(second)) {
+    localStorage.setItem("Second", curTime);
     if (!isNaN(second) && second != 0) {
       localStorage.setItem("Third", second);
     }
-  } else if (third > Number(curMoves) || third == 0 || isNaN(third)) {
-    localStorage.setItem("Third", curMoves);
+  } else if (third > Number(curTime) || third == 0 || isNaN(third)) {
+    localStorage.setItem("Third", curTime);
   }
   displayScore();
 }
@@ -41,8 +40,8 @@ function displayScore() {
   let first = Number(localStorage.getItem("First"));
   let second = Number(localStorage.getItem("Second"));
   let third = Number(localStorage.getItem("Third"));
-  console.log(first);
-  if (!isNaN(first) && first != 0) {
+  
+  if (!isNaN(first)&&first!=0) {
     firstBox.innerHTML = first + "";
   }
   if (!isNaN(second) && second != 0) {
@@ -52,8 +51,25 @@ function displayScore() {
     thirdBox.innerHTML = third + "";
   }
 }
+function startTimer(){
+  interval=setInterval(showTime,1000);
+}
+function showTime(){
+  const timeDiv=document.getElementById("time");
+  let time=Number(timeDiv.innerHTML);
+  time++;
+  timeDiv.innerHTML=time;
+  console.log(time);
+}
 
 function drawBoard(nRows, nCols, nCells) {
+  try{
+    clearInterval(interval);
+  }catch{
+
+  };
+  const timeDiv=document.getElementById("time");
+  timeDiv.innerHTML=1;
   const board = document.getElementById("board");
   board.style.display = "flex";
   board.innerHTML = "";
@@ -116,6 +132,7 @@ function drawBoard(nRows, nCols, nCells) {
       swap(nRows, nCols, nCells, e);
     })
   );
+  
 }
 function createEmptyTile(nCells) {
   const tileList = document.querySelectorAll(".tile");
@@ -198,6 +215,11 @@ function checkWin(nCells, nRows, nCols) {
   board.style.display = "none";
   winText = document.getElementById("winText");
   winText.style.display = "block";
+  try{
+    clearInterval(interval);
+  }catch{
+
+  };
   setTimeout(resetBoard, 4000);
 }
 
@@ -207,6 +229,9 @@ function swap(nRows, nCols, nCells, e) {
   let row = Number(tileClicked[1]);
   let col = Number(tileClicked[3]);
   const tile = document.getElementById(`r${row}c${col}`);
+  if(nMoves.innerHTML=="0"){
+    startTimer();
+  }
   if (checkAbove(row, col, nCells) > -1) {
     let emptyTileIndex = checkAbove(row, col, nCells);
     for (let i = emptyTileIndex; i < row; i++) {
@@ -279,8 +304,8 @@ function swap(nRows, nCols, nCells, e) {
 function start() {
   const rowInput = document.getElementById("nRows");
   const colInput = document.getElementById("nCols");
-  rowInput.value = 3;
-  colInput.value = 3;
+  rowInput.value = 4;
+  colInput.value = 4;
   drawBoard(rowInput.value, colInput.value, rowInput.value * colInput.value);
 }
 function resetBoard() {
@@ -301,6 +326,10 @@ function clearScores() {
 }
 function KeyEvent(e) {
   let nMoves = document.getElementById("nMoves");
+  if(nMoves.innerHTML=="0"){
+    startTimer();
+  }
+  
   const rowInput = document.getElementById("nRows");
   const colInput = document.getElementById("nCols");
   let tile;
